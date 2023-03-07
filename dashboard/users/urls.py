@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 
 from rest_framework.routers import SimpleRouter
 
@@ -7,6 +7,7 @@ from .views import (
     UsersAPIView,
     UserAPIView,
     )
+
 
 router = SimpleRouter()
 router.register('users', UserViewSet)

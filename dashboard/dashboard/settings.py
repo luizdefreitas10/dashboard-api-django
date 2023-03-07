@@ -10,9 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
-# import environ
-# env = environ.Env()
-# environ.Env.read_env()
+import environ
+env = environ.Env()
+environ.Env.read_env()
 
 import os
 from pathlib import Path
@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     
     "django_filters",
     "rest_framework",
-    "rest_framework.authtoken",
+    "rest_framework_simplejwt",
     
     "corsheaders",
     
@@ -159,8 +159,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #DRF
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.SessionAuthentication",
+        # "rest_framework.authentication.SessionAuthentication",
         # "rest_framework.authentication.TokenAuthentication",
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticatedOrReadOnly",
@@ -203,3 +204,14 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken',
     'x-requested-with',
 )
+
+# admin token 275b9fb3d28e2c1ae40af33302878b230e2b8776 
+
+# SMTP Configuration 
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST ='smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'luizdefreitas10@gmail.com'
+EMAIL_HOST_PASSWORD = 'luizinho16'

@@ -9,8 +9,8 @@ from rest_framework.permissions import IsAuthenticated
 # from rest_framework import mixins
 # from rest_framework import permissions
 
-from .models import User
-from .serializers import UserSerializer
+from ..models.user import User
+from ..serializers.user import UserSerializer
 
 
 # Create your views here.

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import User
+from ..models.user import User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -17,5 +17,5 @@ class UserSerializer(serializers.ModelSerializer):
             'username',
             'first_name',
             'last_name',
-            'telephone',
+            'telefone',
         )

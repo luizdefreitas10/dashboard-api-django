@@ -27,6 +27,8 @@ from django.urls import path, include
 from users.urls import router
 
 
+from users.views.register_view import CreateUserView
+
 
 urlpatterns = [
     path('api/v1/', include("users.urls")),
@@ -39,4 +41,5 @@ urlpatterns = [
     path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     path('reset_password/<uidb64>/<token>', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    path('api/auth/register/', CreateUserView.as_view(), name='register'),
 ]

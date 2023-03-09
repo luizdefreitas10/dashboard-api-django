@@ -7,6 +7,15 @@ from users.models.logdate import MixinsLogData
 
 # Create your models here.
 
+class User(AbstractUser):
+    telefone = models.CharField(max_length=25)
+    
+    def save(self, force_insert=False, force_update=False, using=None, update_fields=None) -> None:
+        self.password = make_password(self.password)
+        return super().save(force_insert, force_update, using, update_fields)
+    
+    # estudar sobre django signals para implementar corretamente a sobrescrita do metodo acima
+     
 # class Base(models.Model):
 #     criacao = models.DateTimeField(auto_now_add=True)
 #     atualizacao = models.DateTimeField(auto_now=True)
@@ -32,14 +41,6 @@ from users.models.logdate import MixinsLogData
 #     def __str__(self):
 #         return self.username
 
-class User(AbstractUser):
-    telefone = models.CharField(max_length=25)
-    
-    def save(self, force_insert=False, force_update=False, using=None, update_fields=None) -> None:
-        self.password = make_password(self.password)
-        return super().save(force_insert, force_update, using, update_fields)
-    
-    # estudar sobre django signals para implementar corretamente a sobrescrita do metodo acima 
     
 # class UserAccessLog(models.Model):
 #     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='access_log')

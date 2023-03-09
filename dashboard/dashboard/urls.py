@@ -39,7 +39,7 @@ urlpatterns = [
     
     path('admin/', admin.site.urls),
     # path('admin/', UserAccessLogView.as_view(), name='login'),
-    path('login/', login_view, name='login'),
+    path('', login_view, name='login'),
     
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

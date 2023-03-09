@@ -26,8 +26,11 @@ from django.contrib import admin
 from django.urls import path, include
 from users.urls import router
 
-
 from users.views.register_view import CreateUserView
+
+from accesslog.views.access_logs_view import login_view
+
+# from ..accesslog.views.access_logs_view import login
 
 
 urlpatterns = [
@@ -35,6 +38,8 @@ urlpatterns = [
     path('api/v2/', include(router.urls)),
     
     path('admin/', admin.site.urls),
+    # path('admin/', UserAccessLogView.as_view(), name='login'),
+    path('login/', login_view, name='login'),
     
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

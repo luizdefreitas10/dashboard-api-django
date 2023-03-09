@@ -1,6 +1,8 @@
 from django.db import models
 
-from .user_logs import User
+from django.contrib.auth.models import User
+
+# from .user_logs import User
 
 # Create your models here.
 

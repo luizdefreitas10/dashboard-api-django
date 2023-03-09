@@ -1,4 +1,4 @@
-from ..models import UserAccessLog
+from ..models.user_logs import UserAccessLog
 
 
 def log_user_access(request):

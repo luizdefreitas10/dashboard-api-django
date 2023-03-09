@@ -223,3 +223,6 @@ EMAIL_HOST_PASSWORD = 'nvcrxsgbasgnkksf'
 AUTH_USER_MODEL = 'users.User'
 
 LOGIN_URL = '/login/'
+
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'

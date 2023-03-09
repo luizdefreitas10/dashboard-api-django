@@ -1,8 +1,10 @@
 from django.contrib.auth import authenticate, login
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from accesslog.models.user_logs import UserAccessLog
 from django.contrib import messages
 
+# from users.models import User
 from django.contrib.auth.models import User
 
 
@@ -14,10 +16,9 @@ def login_view(request):
         
         if user is not None:
             login(request, user)
-            user_access_log = UserAccessLog(user=user)
-            user_access_log.save()
-            
-            return redirect('home')
+            UserAccessLog.objects.create(user=user, ip_address=request.META['REMOTE_ADDR'])
+        
+            return redirect('admin/')
         else:
             messages.error(request, 'Invalid username or password')
     else:
@@ -68,7 +69,7 @@ def login_view(request):
 
 # class UserAccessLogView(View):
     
-#     def post(self, request):
+# def login_view(self, request):
 #         if request.user.is_authenticated:
 #             UserAccessLog.objects.create(user=request.user, ip_address=request.META['REMOTE_ADDR'])
 #         return HttpResponse(status=204)

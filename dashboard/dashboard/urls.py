@@ -26,7 +26,7 @@ from django.contrib import admin
 from django.urls import path, include
 from users.urls import router
 
-from users.views.register_view import CreateUserView
+from registerlog.views.views import CreateUserView
 
 from accesslog.views.access_logs_view import login_view, logout_view
 

@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.shortcuts import render, redirect
 
-from dashboard.registerlog.models.registerlog import UserRegistrationLog
+from registerlog.models.registerlog import UserRegistrationLog
 from ..models.registerlog import User
 from django.contrib.auth import authenticate
 
@@ -14,10 +14,14 @@ from serializers.register_log import UserRegistrationLogSerializer
 
 
 class CreateUserView(generics.CreateAPIView):
+    permission_classes = (IsAuthenticated, ) 
     queryset = User.objects.all()
-    permission_classes = [AllowAny]
     serializer_class = UserRegistrationLogSerializer
     
+    
+    # Talvez essa sessão inteira de código (abaixo) seja totalmente 
+    # inútil, pois so precisa enviar o dados + dados do user que criou
+    # + dados da data em que foi criado algum usuário. -> o serializer faz isso
     def create_register_log(request):
         if request.user.is_authenticated:
             if request.method == 'POST':
@@ -46,6 +50,8 @@ class CreateUserView(generics.CreateAPIView):
                     messages.error(request, 'All obligatory fields must be filled.')
             else:
                 return render(request, 'templates/register.html')
+        else:
+            return messages.error(request, 'User not authenticated')
             
             
                 

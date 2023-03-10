@@ -4,19 +4,19 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 from django.shortcuts import render, redirect
 
-from dashboard.accesslog.models.user_logs import UserRegistrationLog
+from dashboard.registerlog.models.registerlog import UserRegistrationLog
 from ..models.registerlog import User
 from django.contrib.auth import authenticate
 
 from accesslog.utils.user_logs import log_user_access
 
-from serializers.register_log import UserRegisterSerializer
+from serializers.register_log import UserRegistrationLogSerializer
 
 
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = [AllowAny]
-    serializer_class = UserRegisterSerializer
+    serializer_class = UserRegistrationLogSerializer
     
     def create_register_log(request):
         if request.user.is_authenticated:
@@ -29,14 +29,14 @@ class CreateUserView(generics.CreateAPIView):
                 first_name = request.POST['first_name']
                 last_name = request.POST['last_name']
                 telefone = request.POST['telefone']
-                userLog = is_valid(request, 
-                                    username=username,
-                                    password=password, 
-                                    email=email,
-                                    first_name=first_name,
-                                    last_name=last_name,
-                                    telefone=telefone,
-                                    added_by=added_by)
+                userLog = UserRegistrationLogSerializer(request, 
+                                                username=username,
+                                                password=password, 
+                                                email=email,
+                                                first_name=first_name,
+                                                last_name=last_name,
+                                                telefone=telefone,
+                                                added_by=added_by)
 
                 if userLog is not None:
                     UserRegistrationLog.objects.create(user=userLog)
@@ -45,8 +45,8 @@ class CreateUserView(generics.CreateAPIView):
                 else:
                     messages.error(request, 'All obligatory fields must be filled.')
             else:
-                return render(request, 'registration/register.html')
+                return render(request, 'templates/register.html')
             
             
                 
-        log_user_access(request)
+        # log_user_access(request)

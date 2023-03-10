@@ -29,7 +29,7 @@ class CreateUserView(generics.CreateAPIView):
                 first_name = request.POST['first_name']
                 last_name = request.POST['last_name']
                 telefone = request.POST['telefone']
-                userLog = UserRegistrationLogSerializer(request, 
+                userLog = """ NÃO SEI OQUE VAI AQUI, SABOSTA!"""(request, 
                                                 username=username,
                                                 password=password, 
                                                 email=email,

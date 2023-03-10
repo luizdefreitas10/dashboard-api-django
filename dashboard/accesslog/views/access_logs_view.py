@@ -1,8 +1,10 @@
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
-from accesslog.models.user_logs import UserAccessLog
 from django.contrib import messages
+from django.contrib.auth import logout
+
+from accesslog.models.user_logs import UserAccessLog
 
 # from users.models import User
 from django.contrib.auth.models import User
@@ -18,12 +20,19 @@ def login_view(request):
             login(request, user)
             UserAccessLog.objects.create(user=user, ip_address=request.META['REMOTE_ADDR'])
         
-            return redirect('admin/')
+            # return redirect('admin/')
+            return HttpResponseRedirect('/admin/')
+            
         else:
             messages.error(request, 'Invalid username or password')
     else:
         return render(request, 'registration/login.html')
 
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')
+    
 
 
 # import jwt

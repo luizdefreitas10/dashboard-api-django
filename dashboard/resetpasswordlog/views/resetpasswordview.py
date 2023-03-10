@@ -1,5 +1,6 @@
-from django.http import HttpResponseRedirect
-from django.urls import reverse_lazy
+import datetime
+from django.http import Http404, HttpResponseRedirect
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.shortcuts import render
 from django.contrib.auth.views import PasswordResetView
@@ -22,21 +23,46 @@ class ResetPasswordView(PasswordResetView):
     success_url = reverse_lazy('password_reset_done')
 
     def form_valid(self, form):
-        response = super().form_valid(form)
+        # response = super().form_valid(form)
 
         # Criar um registro no modelo ResetPasswordLog
         email = form.cleaned_data.get('email')
         user = User.objects.get(email=email)
+        # Criar um registro no modelo ResetPasswordLog
+        reset_log = ResetPasswordLog.objects.create(user=user)
+        # Gerar o token e armazená-lo no registro
         token_generator = PasswordResetTokenGenerator()
         token = token_generator.make_token(user)
-        requested_at = timezone.now()
-        status = 'requested'
+        reset_log.token = token
+        reset_log.save()
+        
+        # Enviar o email de redefinição de senha
+        # reset_url = reverse('password_reset_confirm', kwargs={
+        #     'uidb64': urlsafe_base64_encode(force_bytes(user.pk)),
+        #     'token': reset_log.token,
+        # })
+        # reset_url = self.request.build_absolute_uri(reset_url)
+        # reset_message = render_to_string('password_reset_email.html', {
+        #     'user': user,
+        #     'reset_url': reset_url,
+        # })
+        # send_mail('Reset Your Password', reset_message, 'noreply@example.com', [user.email])
 
-        ResetPasswordLog.objects.create(
-            user=user,
-            token=token,
-            requested_at=requested_at,
-            status=status
-        )
+        # Verificar se o token é válido e não foi utilizado
+        
+        # try:
+        #     reset_log = ResetPasswordLog.objects.get(user=user, token=token)
+        #     if not reset_log.is_token_valid():
+        #         raise ValueError('Token expired')
+        #     elif reset_log.is_token_used():
+        #         raise ValueError('Token already used')
+        # except ResetPasswordLog.DoesNotExist:
+        #     raise Http404('No reset password log found for the given user and token')
 
-        return response
+        # Atualizar o registro do token
+        reset_log.reseted_at = timezone.now()
+        reset_log.used_at = timezone.now()
+        reset_log.status = 'reseted'
+        reset_log.save()
+
+        return super().form_valid(form)

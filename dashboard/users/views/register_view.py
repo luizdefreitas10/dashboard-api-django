@@ -9,7 +9,7 @@ from ..serializers.register import UserRegisterSerializer
 
 class CreateUserView(generics.CreateAPIView):
     queryset = User.objects.all()
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     serializer_class = UserRegisterSerializer
     
     # def create_log(request):

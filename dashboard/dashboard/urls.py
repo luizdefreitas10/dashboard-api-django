@@ -30,10 +30,13 @@ from users.views.register_view import CreateUserView
 
 from accesslog.views.access_logs_view import login_view, logout_view
 
+from resetpasswordlog.views.resetpasswordview import ResetPasswordView
+
 # from ..accesslog.views.access_logs_view import login
 
 
 urlpatterns = [
+    
     path('api/v1/', include("users.urls")),
     path('api/v2/', include(router.urls)),
     
@@ -45,10 +48,11 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     
-    path('reset_password/', auth_views.PasswordResetView.as_view(), name='reset_password'),
+    path('reset_password/', ResetPasswordView.as_view(), name='reset_password'),
     path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     path('reset_password/<uidb64>/<token>', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     
     path('api/auth/register/', CreateUserView.as_view(), name='register'),
+    
 ]

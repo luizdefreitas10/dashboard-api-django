@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     
     "users",
     "accesslog",
+    "resetpasswordlog",
 ]
 
 MIDDLEWARE = [
@@ -182,9 +183,9 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:3000",
+# ]
 
 CORS_ALLOW_METHODS = [
     "DELETE",
@@ -222,7 +223,8 @@ EMAIL_HOST_PASSWORD = 'nvcrxsgbasgnkksf'
 
 AUTH_USER_MODEL = 'users.User'
 
-# LOGIN_URL = ''
+# confifurando rotas que encaminha o usuario apos o login e logout: 
+
 LOGIN_URL = '/login/'
 LOGOUT_URL = 'logout'
 

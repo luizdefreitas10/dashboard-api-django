@@ -48,11 +48,10 @@ class ResetPasswordLog(models.Model):
             elif reset_log.used_at is not None:
                 raise ValueError('Token already used')
             else:
-                reset_log.reseted_at = timezone.now()
+                # reset_log.reseted_at = timezone.now()
                 reset_log.used_at = timezone.now()
                 reset_log.status = 'reseted'
                 reset_log.save()
-                # return render(request, 'password_reset_confirm.html', {'form': form})
 
         except (TypeError, ValueError, OverflowError, User.DoesNotExist, ResetPasswordLog.DoesNotExist):
             raise Http404('No reset password log found for the given user and token')

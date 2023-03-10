@@ -1,6 +1,7 @@
 from django.contrib.auth import views as auth_views
 from django.utils.http import urlsafe_base64_decode
 from ..models.resetpasswordlog import ResetPasswordLog
+from django.utils import timezone
 
 from users.models import User
 
@@ -15,6 +16,7 @@ class ResetPasswordConfirmView(auth_views.PasswordResetConfirmView):
                 user = User.objects.get(pk=uid)
                 reset_log = ResetPasswordLog.objects.get(user=user, token=token)
                 reset_log.reset_password_confirm(request, uidb64, token, reset_log.expire_at)
+                reset_log.reseted_at = timezone.now()
                 return super().post(request, uidb64=uidb64, token=token, *args, **kwargs)
             except (TypeError, ValueError, OverflowError, User.DoesNotExist, ResetPasswordLog.DoesNotExist):
                 pass

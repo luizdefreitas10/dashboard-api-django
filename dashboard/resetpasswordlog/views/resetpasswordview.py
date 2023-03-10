@@ -61,7 +61,7 @@ class ResetPasswordView(PasswordResetView):
 
         # Atualizar o registro do token
         reset_log.reseted_at = timezone.now()
-        reset_log.used_at = timezone.now()
+        # reset_log.used_at = timezone.now()
         reset_log.status = 'reseted'
         reset_log.save()
 

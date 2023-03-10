@@ -12,10 +12,10 @@ class UserAccessLog(models.Model):
     ip_address = models.CharField(max_length=255, blank=True, null=True)
     
     
-class UserRegistrationLog(models.Model):
-    added_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='added_users')
-    new_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='added_by_users')
-    registration_date = models.DateTimeField(auto_now_add=True)
+# class UserRegistrationLog(models.Model):
+#     added_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='added_users')
+#     new_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='added_by_users')
+#     registration_date = models.DateTimeField(auto_now_add=True)
     
 
 class PasswordResetLog(models.Model):

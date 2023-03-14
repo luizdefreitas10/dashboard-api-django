@@ -1,4 +1,5 @@
 import datetime
+import secrets
 from django.db import models
 from django.http import Http404
 from django.shortcuts import render
@@ -19,17 +20,22 @@ class ResetPasswordLog(models.Model):
     used_at = models.DateTimeField(null=True, blank=True)
     expire_at = models.DateTimeField(null=True, blank=True)
     # expire_at = requested_at + datetime.timedelta(hours=24)
-    status = models.CharField(max_length=10, default='requested')
+    status = models.CharField(max_length=10, null=True, blank=True)
     
     def save(self, *args, **kwargs):
         if not self.id:
             self.expire_at = timezone.now() + datetime.timedelta(hours=24)
-            self.used_at = None  # Define o campo used_at como nulo ao criar um novo objeto
+            # self.used_at = None  # Define o campo used_at como nulo ao criar um novo objeto
         super().save(*args, **kwargs)
         
     
     def is_token_valid(self):
-        return self.expire_at is not None and timezone.now() < self.expire_at
+        time = timezone.now() + datetime.timedelta(hours=24)
+        if self.expire_at < time:
+            raise Exception(detail="token expirado")
+        if self.used_at:
+            raise Exception(detail="token utilizado")
+            
     
     
     def is_token_used(self):
@@ -42,14 +48,15 @@ class ResetPasswordLog(models.Model):
             user = User.objects.get(pk=uid)
         
             reset_log = ResetPasswordLog.objects.get(user=user, token=token)
+            print(reset_log)
             
             if not reset_log.is_token_valid():
                 raise ValueError('Token expired')
             elif reset_log.used_at is not None:
                 raise ValueError('Token already used')
             else:
-                # reset_log.reseted_at = timezone.now()
-                reset_log.used_at = timezone.now()
+                reset_log.reseted_at = timezone.now()
+                # reset_log.used_at = timezone.now()
                 reset_log.status = 'reseted'
                 reset_log.save()
 
@@ -63,3 +70,11 @@ class ResetPasswordLog(models.Model):
         self.save()
         
 
+    ## tentativa de implementar o log de redef: 
+    # @classmethod
+    # def create_log_user(cls, user):
+    #     token = secrets.token_hex(32)
+    #     log = cls(user=user, token=token)
+    #     log.expire_at = timezone.now() + datetime.timedelta(hours=24)
+    #     log.save()
+    #     return log

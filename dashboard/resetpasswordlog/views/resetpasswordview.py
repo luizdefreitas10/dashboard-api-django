@@ -12,6 +12,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 
 from users.models import User
+
 from ..models.resetpasswordlog import ResetPasswordLog
 
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -26,15 +27,19 @@ class ResetPasswordView(PasswordResetView):
         # response = super().form_valid(form)
 
         # Criar um registro no modelo ResetPasswordLog
+        
         email = form.cleaned_data.get('email')
         user = User.objects.get(email=email)
-        # Criar um registro no modelo ResetPasswordLog
         reset_log = ResetPasswordLog.objects.create(user=user)
+        print(reset_log)
         # Gerar o token e armazená-lo no registro
         token_generator = PasswordResetTokenGenerator()
         token = token_generator.make_token(user)
+        print(token)
         reset_log.token = token
+        reset_log.requested_at = timezone.now()
         reset_log.save()
+        print(f"{token} depois do save")
         
         # Enviar o email de redefinição de senha
         # reset_url = reverse('password_reset_confirm', kwargs={
@@ -48,21 +53,12 @@ class ResetPasswordView(PasswordResetView):
         # })
         # send_mail('Reset Your Password', reset_message, 'noreply@example.com', [user.email])
 
-        # Verificar se o token é válido e não foi utilizado
-        
-        # try:
-        #     reset_log = ResetPasswordLog.objects.get(user=user, token=token)
-        #     if not reset_log.is_token_valid():
-        #         raise ValueError('Token expired')
-        #     elif reset_log.is_token_used():
-        #         raise ValueError('Token already used')
-        # except ResetPasswordLog.DoesNotExist:
-        #     raise Http404('No reset password log found for the given user and token')
-
+   
         # Atualizar o registro do token
-        reset_log.reseted_at = timezone.now()
+        
+        # reset_log.reseted_at = timezone.now()
         # reset_log.used_at = timezone.now()
-        reset_log.status = 'reseted'
-        reset_log.save()
+        # reset_log.status = 'reseted'
+        # reset_log.save()
 
         return super().form_valid(form)

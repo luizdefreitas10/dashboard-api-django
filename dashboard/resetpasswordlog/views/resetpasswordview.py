@@ -31,7 +31,8 @@ class ResetPasswordView(PasswordResetView):
         email = form.cleaned_data.get('email')
         user = User.objects.get(email=email)
         reset_log = ResetPasswordLog.objects.create(user=user)
-        print(reset_log)
+        # print(dir(reset_log))
+        
         # Gerar o token e armazená-lo no registro
         token_generator = PasswordResetTokenGenerator()
         token = token_generator.make_token(user)
@@ -39,7 +40,6 @@ class ResetPasswordView(PasswordResetView):
         reset_log.token = token
         reset_log.requested_at = timezone.now()
         reset_log.save()
-        print(f"{token} depois do save")
         
         # Enviar o email de redefinição de senha
         # reset_url = reverse('password_reset_confirm', kwargs={

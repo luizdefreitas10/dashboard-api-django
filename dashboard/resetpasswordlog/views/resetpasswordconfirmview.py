@@ -1,5 +1,6 @@
+from pyexpat.errors import messages
 from django.contrib.auth import views as auth_views
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.utils.http import urlsafe_base64_decode
 from ..models.resetpasswordlog import ResetPasswordLog
@@ -11,6 +12,8 @@ from users.models import User
 import logging 
 
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.http import urlsafe_base64_decode
+from django.contrib.auth.tokens import default_token_generator
 
 logger = logging.getLogger(__name__)
 
@@ -24,18 +27,15 @@ class ResetPasswordConfirmView(auth_views.PasswordResetConfirmView):
             # Chamar o método reset_password_confirm para validar o token
             
             try:
-                # print('PRITANDO A CLASSE', auth_views.PasswordResetConfirmView.reset_url_token)
-                # user_token = ResetPasswordLog.objects.get(token=token)
-                # print(user_token)
-                print("entrei no if")
                 uid = urlsafe_base64_decode(uidb64).decode()
+
                 user = User.objects.get(pk=uid)
-                print(user.pk)
-                reset_log: ResetPasswordLog = ResetPasswordLog.objects.filter(id=user.pk, token=token)
-                reset_lo2g= ResetPasswordLog.objects.filter(user=user, token=token).last()
-                print(reset_log)
-                print(reset_lo2g)
-                reset_log.is_token_valid()
+
+                reset_log = ResetPasswordLog.objects.get(pk=user.pk)
+
+                if not reset_log.is_token_valid():
+                    raise ValueError('Token expired or already used')
+                    
                 reset_log.reseted_at = timezone.now()
                 reset_log.used_at = timezone.now()
                 reset_log.status = 'reseted'
@@ -47,3 +47,5 @@ class ResetPasswordConfirmView(auth_views.PasswordResetConfirmView):
                 raise Http404('No reset password log found for the given user and token')
         return super().post(request, uidb64=uidb64, token=token, *args, **kwargs)
     
+    
+   

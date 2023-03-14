@@ -31,6 +31,7 @@ from users.views.register_view import CreateUserView
 from accesslog.views.access_logs_view import login_view, logout_view
 
 from resetpasswordlog.views.resetpasswordview import ResetPasswordView
+
 from resetpasswordlog.views.resetpasswordconfirmview import ResetPasswordConfirmView
 
 # from ..accesslog.views.access_logs_view import login

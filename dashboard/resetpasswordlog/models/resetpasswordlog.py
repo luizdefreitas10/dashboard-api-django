@@ -30,11 +30,11 @@ class ResetPasswordLog(models.Model):
         
     
     def is_token_valid(self):
-        time = timezone.now() + datetime.timedelta(hours=24)
-        if self.expire_at < time:
-            raise Exception(detail="token expirado")
-        if self.used_at:
-            raise Exception(detail="token utilizado")
+        now = timezone.now()
+        if self.expire_at > now and self.used_at is None:
+            return True
+        else:
+            return False
             
     
     

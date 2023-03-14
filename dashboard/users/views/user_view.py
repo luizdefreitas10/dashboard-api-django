@@ -18,18 +18,18 @@ from ..serializers.user import UserSerializer
 """ API v1 Users """
 
 class UsersAPIView(generics.ListCreateAPIView):
-    permission_classes = (IsAuthenticated, ) # se quiser remover autorizacao por token para acessar a rota, basta comentar esta linha de codigo
+    # permission_classes = (IsAuthenticated, ) # se quiser remover autorizacao por token para acessar a rota, basta comentar esta linha de codigo
     queryset = User.objects.all()
     serializer_class = UserSerializer
     
 class UserAPIView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (IsAuthenticated, )    
+    # permission_classes = (IsAuthenticated, )    
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
 """ API v2 Users """
 
 class UserViewSet(viewsets.ModelViewSet):
-    permission_classes = (IsAuthenticated, )
+    # permission_classes = (IsAuthenticated, )
     queryset = User.objects.all()
     serializer_class = UserSerializer

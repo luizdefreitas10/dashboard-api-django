@@ -9,11 +9,21 @@ from users.models.logdate import MixinsLogData
 
 class User(AbstractUser):
     telefone = models.CharField(max_length=25)
-    
+      
+    def create_superuser(self, username, password):
+        user = self.create_user(
+            password= password,
+            username= username,
+        )
+        user.is_admin= True
+        user.staff= True
+        user.is_superuser= True
+        user.save(using= self._db)
+        return user
+
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None) -> None:
         self.password = make_password(self.password)
         return super().save(force_insert, force_update, using, update_fields)
-    
     # estudar sobre django signals para implementar corretamente a sobrescrita do metodo acima
      
 # class Base(models.Model):

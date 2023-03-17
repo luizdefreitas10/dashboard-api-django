@@ -4,6 +4,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 
+from rest_framework.exceptions import ValidationError
+
 from ..models import User
 
 from accesslog.utils.user_logs import log_user_access
@@ -13,8 +15,8 @@ from ..models.register import UserRegistrationLog
 
 
 class CreateUserView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    permission_classes = [IsAuthenticated]
+    # queryset = User.objects.all()
+    # permission_classes = [IsAuthenticated]
     serializer_class = UserRegisterSerializer
     
     # def create_log(request):
@@ -28,23 +30,9 @@ class CreateUserView(generics.CreateAPIView):
     # sobrescrever o metodo post da view 
     
     def perform_create(self, serializer):
-        
-        # pegar o usuario que esta logado, autenticado e criando o novo usuario
-        user = self.request.user
-        # print('usuario do self.request.user', user)
-        
-        # cria o usuário
+        serializer = UserRegisterSerializer(data=self.request.data)
+        if not serializer.is_valid():
+            raise ValidationError()
         serializer.save()
-        
-        # pega o usuário criado
-        created_user = serializer.instance
-        # print('created_user is ', created_user)
-        
         # cria o log de registro
-        UserRegistrationLog.objects.create(
-            created_by = user,
-            created_user = created_user
-        )
-        
-        # retorna a resposta padrão da criação
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(data=serializer.data, status=status.HTTP_201_CREATED)

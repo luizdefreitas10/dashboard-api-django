@@ -5,6 +5,7 @@ from django.contrib.auth.hashers import make_password
 from simple_history.models import HistoricalRecords
 from auditlog.models import AuditlogHistoryField
 from auditlog.registry import auditlog
+
 # Create your models here.
 
 class User(AbstractUser):

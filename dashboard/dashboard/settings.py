@@ -10,9 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+from datetime import timedelta
 import environ
 env = environ.Env()
 environ.Env.read_env()
+
+import secrets
 
 import os
 from pathlib import Path
@@ -172,8 +175,8 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticatedOrReadOnly",
     ),
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 20,
+    # "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    # "PAGE_SIZE": 20,
     "DEFAULT_THROTTLE_CLASSES": (
         "rest_framework.throttling.AnonRateThrottle",    
         "rest_framework.throttling.UserRateThrottle",    
@@ -184,7 +187,18 @@ REST_FRAMEWORK = {
     }
 }
 
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000"
+]
+
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000",
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 # CORS_ALLOWED_ORIGINS = [
 #     "http://localhost:3000",
@@ -226,6 +240,8 @@ EMAIL_HOST_PASSWORD = 'nvcrxsgbasgnkksf'
 
 AUTH_USER_MODEL = 'users.User'
 
+APPEND_SLASH=False
+
 # confifurando rotas que encaminha o usuario apos o login e logout: 
 
 LOGIN_URL = '/login/'
@@ -234,3 +250,23 @@ LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = 'admin/'
 LOGOUT_REDIRECT_URL = 'logout'
 
+# Gera uma sequência de bytes segura com 256 bits (32 bytes)
+signing_key = secrets.token_bytes(32)
+
+# Codifica a sequência de bytes em uma string de base64
+encoded_key = signing_key.hex()
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': encoded_key,
+    'VERIFYING_KEY': None,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+}

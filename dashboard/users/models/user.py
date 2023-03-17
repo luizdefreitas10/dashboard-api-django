@@ -9,10 +9,6 @@ from auditlog.registry import auditlog
 
 class User(AbstractUser):
     telefone = models.CharField(max_length=25)
-    # history = HistoricalRecords(
-    #     excluded_fields=['password', 'is_staff', 'is_superuser', 'groups', 'user_permissions', 'last_login', 'first_name', 'last_name', 'email', 'is_active', 'date_joined', 'telefone']
-    # )
-    history = AuditlogHistoryField()
     
     use_in_migrations = True
     
@@ -46,11 +42,6 @@ class User(AbstractUser):
         self.password = make_password(self.password)
         
         return super().save(force_insert, force_update, using, update_fields)
-    
-    # def history_type_change(self):
-    #     history_type_changed = self.history_type
-    #     print(history_type_changed)
 
     # estudar sobre django signals para implementar corretamente a sobrescrita do metodo acima
 
-auditlog.register(User)

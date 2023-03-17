@@ -28,7 +28,8 @@ from users.urls import router
 
 from users.views.register_view import CreateUserView
 
-from accesslog.views.access_logs_view import login_view, logout_view
+from accesslog.views.logoutview import logout
+from accesslog.views.loginview import LoginView
 
 from resetpasswordlog.views.resetpasswordview import ResetPasswordView
 
@@ -43,16 +44,17 @@ urlpatterns = [
     path('api/v2/', include(router.urls)),
     
     path('admin/', admin.site.urls),
-    path('login/', login_view, name='login'),
-    path('logout/', logout_view, name='logout'),
+    path('api/login/', LoginView.as_view(), name='login'),
+    path('api/logout/', logout, name='logout'),
     
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     
     path('reset_password/', ResetPasswordView.as_view(), name='reset_password'),
     path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     path('reset_password/<uidb64>/<token>/', ResetPasswordConfirmView.as_view(), name='password_reset_confirm'),
+    # path('reset_password/<uidb64>/', ResetPasswordConfirmView.as_view(), name='password_reset_confirm'),
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     
     path('api/auth/register/', CreateUserView.as_view(), name='register'),

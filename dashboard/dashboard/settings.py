@@ -115,7 +115,7 @@ DATABASES = {
         'NAME': 'usuarios_teste',
         'USER': 'postgres',
         'PASSWORD': 'root',
-        'HOST': '127.0.0.1',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
@@ -200,10 +200,6 @@ CORS_ORIGIN_WHITELIST = [
 
 CORS_ALLOW_CREDENTIALS = True
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:3000",
-# ]
-
 CORS_ALLOW_METHODS = [
     "DELETE",
     "GET",
@@ -259,7 +255,7 @@ encoded_key = signing_key.hex()
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': True,
+    'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': encoded_key,

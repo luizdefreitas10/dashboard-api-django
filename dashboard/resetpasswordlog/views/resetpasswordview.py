@@ -13,15 +13,30 @@ from django.core.mail import send_mail
 
 from users.models import User
 
+from ..serializers.resetlogserializer import ResetPasswordLogSerializer
+
 from ..models.resetpasswordlog import ResetPasswordLog
 
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
+from rest_framework.response import Response
+
+from rest_framework.views import APIView
+
 # Create your views here.
 
 
-class ResetPasswordView(PasswordResetView):
+class ResetPasswordView(PasswordResetView, APIView):
+    serializer_class = ResetPasswordLogSerializer
     success_url = reverse_lazy('password_reset_done')
+    
+    def post(self, request):
+        serializer = ResetPasswordLogSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+        else:
+            return Response(serializer.errors, status=400)
 
     def form_valid(self, form):
         # response = super().form_valid(form)

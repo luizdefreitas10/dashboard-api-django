@@ -1,10 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.hashers import make_password
-
-from simple_history.models import HistoricalRecords
-from auditlog.models import AuditlogHistoryField
-from auditlog.registry import auditlog
+from django.contrib.auth.hashers import is_password_usable, make_password
 
 # Create your models here.
 
@@ -40,9 +37,12 @@ class User(AbstractUser):
     
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         
-        self.password = make_password(self.password)
-        
+        if not is_password_usable(self.password):
+            self.password = make_password(self.password)
+            
         return super().save(force_insert, force_update, using, update_fields)
 
     # estudar sobre django signals para implementar corretamente a sobrescrita do metodo acima
+
+
 

@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from ..models.user_logs import UserAccessLog
+from django.contrib.auth import get_user_model
 
+user_model_instace = get_user_model()
 
 class UserAccessLogSerializer(serializers.ModelSerializer):
     

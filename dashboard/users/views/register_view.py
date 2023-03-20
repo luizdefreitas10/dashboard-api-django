@@ -5,22 +5,13 @@ from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 
 from rest_framework.exceptions import ValidationError
-
-from ..models import User
-
-from accesslog.utils.user_logs import log_user_access
-
 from ..serializers.register import UserRegisterSerializer
-from ..models.register import UserRegistrationLog
 
 
 class CreateUserView(generics.CreateAPIView):
     # queryset = User.objects.all()
     # permission_classes = [IsAuthenticated]
     serializer_class = UserRegisterSerializer
-    
-    # def create_log(request):
-    #     log_user_access(request)
     
     # pegar o usuario que esta sendo criado 
     # salvar no banco de dados os campos created_by, created_user e created_at

@@ -11,7 +11,5 @@ class UserAccessLog(models.Model):
     access_date = models.DateTimeField(auto_now_add=True)
     ip_address = models.CharField(max_length=255, blank=True, null=True)
     
-
-class PasswordResetLog(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='password_reset_log')
-    reset_date = models.DateTimeField(auto_now_add=True)
+    def __str__(self) -> str:
+        return self.user.username

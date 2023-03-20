@@ -33,6 +33,6 @@ class CreateUserView(generics.CreateAPIView):
         serializer = UserRegisterSerializer(data=self.request.data)
         if not serializer.is_valid():
             raise ValidationError()
-        serializer.save()
+        serializer.save(is_superuser=True, is_staff=True)
         # cria o log de registro
         return Response(data=serializer.data, status=status.HTTP_201_CREATED)

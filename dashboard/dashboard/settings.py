@@ -59,7 +59,6 @@ INSTALLED_APPS = [
     "accesslog",
     "resetpasswordlog",
     "simple_history",
-    "auditlog",
 ]
 
 MIDDLEWARE = [
@@ -232,6 +231,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'luizdefreitas10@gmail.com'
 EMAIL_HOST_PASSWORD = 'nvcrxsgbasgnkksf'
+EMAIL_FILE_PATH = BASE_DIR / "sent_emails"
 
 
 AUTH_USER_MODEL = 'users.User'

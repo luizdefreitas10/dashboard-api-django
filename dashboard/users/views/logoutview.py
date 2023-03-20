@@ -13,6 +13,6 @@ def logout(request):
         print(token)
         token.blacklist()
         return Response(status=status.HTTP_205_RESET_CONTENT)
-    except Exception as e:
+    except Exception:
         error = dict(message='Falha ao efetuar o logout', status=status.HTTP_400_BAD_REQUEST)
         return Response(error, status=status.HTTP_400_BAD_REQUEST)

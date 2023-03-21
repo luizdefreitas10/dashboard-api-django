@@ -7,6 +7,7 @@ from django.contrib.auth.hashers import is_password_usable, make_password
 
 class User(AbstractUser):
     telefone = models.CharField(max_length=25)
+    email = models.EmailField(unique=True)
     
     use_in_migrations = True
     

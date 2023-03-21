@@ -19,7 +19,6 @@ class ResetPasswordLog(models.Model):
     reseted_at = models.DateTimeField(null=True, blank=True)
     used_at = models.DateTimeField(null=True, blank=True)
     expire_at = models.DateTimeField(null=True, blank=True)
-    # expire_at = requested_at + datetime.timedelta(hours=24)
     status = models.CharField(max_length=10, null=True, blank=True)
     
     def save(self, *args, **kwargs):

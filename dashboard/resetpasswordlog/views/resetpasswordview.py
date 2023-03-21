@@ -1,11 +1,5 @@
-import datetime
-from django.http import Http404, HttpResponseRedirect
-from django.urls import reverse, reverse_lazy
 from django.utils import timezone
-from django.shortcuts import render
-from django.contrib.auth.views import PasswordResetView
-from django.contrib.auth.forms import PasswordResetForm
-from django.contrib.auth.tokens import default_token_generator
+
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.conf import settings
@@ -22,58 +16,60 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from rest_framework.response import Response
 
 from rest_framework.views import APIView
+from users.permissions import AllowAny
 
 # Create your views here.
 
 
-class ResetPasswordView(PasswordResetView, APIView):
+class ResetPasswordView(APIView):
+    permission_classes = [AllowAny]
     serializer_class = ResetPasswordLogSerializer
-    success_url = reverse_lazy('password_reset_done')
+    # success_url = reverse_lazy('password_reset_done')
     
     def post(self, request):
         serializer = ResetPasswordLogSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=201)
+            email = serializer.validated_data["email"]
+            try:
+                user = User.objects.get(email=email)
+
+                # Criar um registro no modelo ResetPasswordLog
+                reset_log = ResetPasswordLog.objects.create(user=user)
+
+                # Gerar o token e armazená-lo no registro
+                token_generator = PasswordResetTokenGenerator()
+                token = token_generator.make_token(user)
+                reset_log.token = token
+                reset_log.requested_at = timezone.now()
+                reset_log.save()
+
+                # Enviar o e-mail de redefinição de senha
+                uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+                reset_url = f"https://localhost:3000/reset_password/{uidb64}/{token}/"
+                subject = "Redefinição de senha"
+                message = f"""Olá {user.first_name},
+
+Você solicitou a redefinição da sua senha. Por favor, clique no link abaixo para redefinir sua senha:
+
+{reset_url}
+
+Se você não solicitou a redefinição de senha, por favor, ignore este e-mail.
+
+Atenciosamente,
+Euipe Gds Tec"""
+
+                from_email = "noreply@example.com"
+                to_email = [user.email]
+                send_mail(subject, message, from_email, to_email)
+
+                return Response(serializer.data, status=201)
+            
+            except User.DoesNotExist:
+                return Response({"detail": "E-mail não encontrado"}, status=400)
+            
         else:
             return Response(serializer.errors, status=400)
+    
 
-    def form_valid(self, form):
-        # response = super().form_valid(form)
-
-        # Criar um registro no modelo ResetPasswordLog
-        
-        email = form.cleaned_data.get('email')
-        user = User.objects.get(email=email)
-        reset_log = ResetPasswordLog.objects.create(user=user)
-        # print(dir(reset_log))
-        
-        # Gerar o token e armazená-lo no registro
-        token_generator = PasswordResetTokenGenerator()
-        token = token_generator.make_token(user)
-        print(token)
-        reset_log.token = token
-        reset_log.requested_at = timezone.now()
-        reset_log.save()
-        
-        # Enviar o email de redefinição de senha
-        # reset_url = reverse('password_reset_confirm', kwargs={
-        #     'uidb64': urlsafe_base64_encode(force_bytes(user.pk)),
-        #     'token': reset_log.token,
-        # })
-        # reset_url = self.request.build_absolute_uri(reset_url)
-        # reset_message = render_to_string('password_reset_email.html', {
-        #     'user': user,
-        #     'reset_url': reset_url,
-        # })
-        # send_mail('Reset Your Password', reset_message, 'noreply@example.com', [user.email])
-
-   
-        # Atualizar o registro do token
-        
-        # reset_log.reseted_at = timezone.now()
-        # reset_log.used_at = timezone.now()
-        # reset_log.status = 'reseted'
-        # reset_log.save()
-
-        return super().form_valid(form)
+    

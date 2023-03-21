@@ -40,6 +40,8 @@ from users.views.api_register_log_view import create_user_with_log
 
 from users.views.api_register_logs import UserRegistrationLogList, UserRegistrationLogDetail
 
+from resetpasswordlog.views.resetpassword_api import ResetPasswordLogList
+
 urlpatterns = [
     #API de retorno de ususarios, CRUD: 
     path('api/v1/', include("users.urls")),
@@ -51,22 +53,25 @@ urlpatterns = [
     path('api/logout/', logout, name='logout'),
     
     # API para trazer os logs de acesso de usuarios: 
-     path('api/users/access-logs/', all_user_access_logs, name='all_user_access_logs'),
+    path('api/users/access-logs/', all_user_access_logs, name='all_user_access_logs'),
     path('api/users/<int:user_id>/access-logs/', user_access_logs, name='user_access_logs'),
     
-    #ROTAS PARA REDEFINICAO DE SENHA: 
+    #TOKEN resrefh: 
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     
     # API para reset de password: 
     path('reset_password/', ResetPasswordView.as_view(), name='reset_password'),
-    path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
+    # path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     path('reset_password/<uidb64>/<token>/', ResetPasswordConfirmView.as_view(), name='password_reset_confirm'),
-    # path('reset_password/<uidb64>/', ResetPasswordConfirmView.as_view(), name='password_reset_confirm'),
+    
+    #API log de redefinicao de senha:
+    path('api/password-reset-logs/', ResetPasswordLogList.as_view(), name='password_reset_logs'),
+    
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     
     #API para registro de novos usuarios: 
-    # path('api/users/create/', create_user_with_log, name='create_user_with_log'),
+
     path('api/auth/register/', create_user_with_log, name='create_user_with_log'),
     
     #API para retorno dos logs de cadastros: 

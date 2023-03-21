@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.utils.http import urlsafe_base64_decode
 from ..models.resetpasswordlog import ResetPasswordLog
 
@@ -46,7 +47,10 @@ class ResetPasswordConfirmView(APIView):
         user.set_password(new_password)
         user.save()
 
-        # Marcar o token como usado
+        # Marcar o token como usado e resetado
+        reset_log.reseted_at = timezone.now()
         reset_log.mark_token_as_used()
+        
+        
 
         return Response({"message": "Password reset successfully"}, status=200)

@@ -70,12 +70,3 @@ class ResetPasswordLog(models.Model):
         self.status = 'reseted'
         self.save()
         
-
-    ## tentativa de implementar o log de redef: 
-    # @classmethod
-    # def create_log_user(cls, user):
-    #     token = secrets.token_hex(32)
-    #     log = cls(user=user, token=token)
-    #     log.expire_at = timezone.now() + datetime.timedelta(hours=24)
-    #     log.save()
-    #     return log

@@ -1,6 +1,3 @@
-
-from django.contrib.auth import views as auth_views
-
 from django.utils.http import urlsafe_base64_decode
 from ..models.resetpasswordlog import ResetPasswordLog
 
@@ -9,15 +6,21 @@ from rest_framework.response import Response
 
 from users.models import User
 
-
 from django.utils.http import urlsafe_base64_decode
 
+from rest_framework.views import APIView
 
-class ResetPasswordConfirmView(auth_views.PasswordResetConfirmView):
+from rest_framework.permissions import AllowAny
+
+
+class ResetPasswordConfirmView(APIView):  
+    permission_classes = [AllowAny]
     
     def post(self, request, uidb64, token):
+        
         # Decodificar o UID e obter o usuário
         uid = force_str(urlsafe_base64_decode(uidb64))
+        
         try:
             user = User.objects.get(pk=uid)
         except User.DoesNotExist:

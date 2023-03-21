@@ -45,5 +45,6 @@ class User(AbstractUser):
 
     # estudar sobre django signals para implementar corretamente a sobrescrita do metodo acima
 
-
-
+    @classmethod
+    def get_user_by_email(cls, email):
+        return cls.objects.filter(email=email).first()

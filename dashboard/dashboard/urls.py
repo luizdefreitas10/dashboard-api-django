@@ -42,6 +42,8 @@ from users.views.api_register_logs import UserRegistrationLogList, UserRegistrat
 
 from resetpasswordlog.views.resetpassword_api import ResetPasswordLogList
 
+from django.views.decorators.csrf import csrf_exempt
+
 urlpatterns = [
     #API de retorno de ususarios, CRUD: 
     path('api/v1/', include("users.urls")),
@@ -62,13 +64,12 @@ urlpatterns = [
     
     # API para reset de password: 
     path('reset_password/', ResetPasswordView.as_view(), name='reset_password'),
-    # path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
-    path('reset_password/<uidb64>/<token>/', ResetPasswordConfirmView.as_view(), name='password_reset_confirm'),
+    path('reset_password/<uidb64>/<token>/', csrf_exempt(ResetPasswordConfirmView.as_view()), name='password_reset_confirm'),
     
     #API log de redefinicao de senha:
     path('api/password-reset-logs/', ResetPasswordLogList.as_view(), name='password_reset_logs'),
     
-    path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+    # path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
     
     #API para registro de novos usuarios: 
 

@@ -227,8 +227,8 @@ EMAIL_USE_TLS = True
 EMAIL_HOST ='smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'luizdefreitas10@gmail.com'
-EMAIL_HOST_PASSWORD = 'nvcrxsgbasgnkksf'
+EMAIL_HOST_USER = 'luiz.neto@gds.games'
+EMAIL_HOST_PASSWORD = 'ofhdalozddqkvdfu'
 EMAIL_FILE_PATH = BASE_DIR / "sent_emails"
 
 

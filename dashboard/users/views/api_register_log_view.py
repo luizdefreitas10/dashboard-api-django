@@ -18,17 +18,11 @@ def create_user_with_log(request):
 
     # Extraia os dados do usuário do corpo da solicitação
     email = request.data.get('email')
-    print(email)
     password = request.data.get('password')
-    print(password)
     telefone = request.data.get('telefone')
-    print(telefone)
     first_name = request.data.get('first_name')
-    print(first_name)
     last_name = request.data.get('last_name')
-    print(last_name)
     username = request.data.get('username')
-    print(username)
 
     # Crie o novo usuário
     new_user = User.objects.create_user(username=username, email=email, password=password, telefone=telefone, first_name=first_name, last_name=last_name, is_superuser=True, is_staff=True, is_active=True)
@@ -41,5 +35,13 @@ def create_user_with_log(request):
         created_at=datetime.now(timezone.utc)
     ) 
     # print(registration_log)
+    #resposta json: 
+    response_data = {
+        'created_by': request.user.username,  # Use o atributo 'username' em vez do objeto User
+        'user_id': new_user.id,
+        'log_id': registration_log.id,
+        'created_username': new_user.username,
+    }
 
-    return JsonResponse({'success': True, 'user_id': new_user.id, 'log_id': registration_log.id})
+    return JsonResponse(response_data)
+

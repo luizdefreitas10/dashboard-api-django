@@ -30,11 +30,11 @@ class ResetPasswordLog(models.Model):
         
     
     def is_token_valid(self):
-        time = timezone.now() + datetime.timedelta(hours=24)
-        if self.expire_at < time:
-            raise Exception(detail="token expirado")
-        if self.used_at:
-            raise Exception(detail="token utilizado")
+        now = timezone.now()
+        if self.expire_at > now and self.used_at is None:
+            return True
+        else:
+            return False
             
     
     
@@ -44,11 +44,13 @@ class ResetPasswordLog(models.Model):
     
     def reset_password_confirm(self, request, uidb64, token, expire_at):
         try:
+            print('executou')
             uid = urlsafe_base64_decode(uidb64).decode()
+            print('este e o uid no model', uid)
             user = User.objects.get(pk=uid)
-        
+            print('este e o user no model', user)
             reset_log = ResetPasswordLog.objects.get(user=user, token=token)
-            print(reset_log)
+            print('este e o reset log no model', reset_log)
             
             if not reset_log.is_token_valid():
                 raise ValueError('Token expired')
@@ -56,7 +58,7 @@ class ResetPasswordLog(models.Model):
                 raise ValueError('Token already used')
             else:
                 reset_log.reseted_at = timezone.now()
-                # reset_log.used_at = timezone.now()
+                reset_log.used_at = timezone.now()
                 reset_log.status = 'reseted'
                 reset_log.save()
 

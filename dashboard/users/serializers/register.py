@@ -1,5 +1,7 @@
+from datetime import timezone
 from rest_framework import serializers
 from ..models import User
+from ..models.register import UserRegistrationLog
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
@@ -10,5 +12,4 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'email', 'password']
         
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
-        return user
+        return super().create(validated_data)
